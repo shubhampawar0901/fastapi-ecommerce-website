@@ -7,39 +7,29 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
-import os
 from typing import Generator
 import logging
 
+from app.core.config import settings
+
 logger = logging.getLogger(__name__)
 
-# Database URL configuration
-# For development, use SQLite; for production, use PostgreSQL
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "sqlite:///./ecommerce.db"  # Default SQLite for development
-)
-
-# Handle PostgreSQL URL format for Render/Heroku
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-
 # SQLAlchemy engine configuration
-if DATABASE_URL.startswith("sqlite"):
+if settings.DATABASE_URL.startswith("sqlite"):
     # SQLite configuration for development
     engine = create_engine(
-        DATABASE_URL,
+        settings.DATABASE_URL,
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
-        echo=False  # Set to True for SQL query logging
+        echo=settings.DATABASE_ECHO
     )
 else:
     # PostgreSQL configuration for production
     engine = create_engine(
-        DATABASE_URL,
+        settings.DATABASE_URL,
         pool_pre_ping=True,
         pool_recycle=300,
-        echo=False  # Set to True for SQL query logging
+        echo=settings.DATABASE_ECHO
     )
 
 # Session configuration
@@ -84,7 +74,7 @@ def get_db_info():
     """
     try:
         with engine.connect() as connection:
-            if DATABASE_URL.startswith("sqlite"):
+            if settings.DATABASE_URL.startswith("sqlite"):
                 result = connection.execute("SELECT 1").fetchone()
                 return {"type": "SQLite", "status": "connected"}
             else:

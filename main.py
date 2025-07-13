@@ -3,17 +3,16 @@ FastAPI E-commerce Application
 Main application entry point with all route configurations
 """
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBearer
 import uvicorn
-import os
 from contextlib import asynccontextmanager
-
-# Import routers
-from routers import auth, products, cart, orders, users, admin
-from database import engine, Base, get_db
 import logging
+
+# Import application components
+from app.core.config import settings
+from app.core.database import engine, Base
+from app.api import auth, products, cart, orders, users, admin
 
 # Configure logging
 logging.basicConfig(
@@ -36,24 +35,22 @@ async def lifespan(app: FastAPI):
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="FastAPI E-commerce API",
+    title=settings.APP_NAME,
     description="A comprehensive e-commerce API built with FastAPI",
-    version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
-    lifespan=lifespan
+    version=settings.APP_VERSION,
+    docs_url="/docs" if not settings.is_production else None,
+    redoc_url="/redoc" if not settings.is_production else None,
+    lifespan=lifespan,
+    debug=settings.DEBUG
 )
-
-# Security scheme
-security = HTTPBearer()
 
 # CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure this properly for production
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=settings.ALLOWED_METHODS,
+    allow_headers=settings.ALLOWED_HEADERS,
 )
 
 # Include routers
@@ -68,10 +65,11 @@ app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
 async def root():
     """Root endpoint - API health check"""
     return {
-        "message": "FastAPI E-commerce API",
-        "version": "1.0.0",
+        "message": settings.APP_NAME,
+        "version": settings.APP_VERSION,
         "status": "healthy",
-        "docs": "/docs"
+        "environment": settings.ENVIRONMENT,
+        "docs": "/docs" if not settings.is_production else "disabled"
     }
 
 @app.get("/health")
@@ -84,11 +82,10 @@ async def health_check():
     }
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))
     uvicorn.run(
         "main:app",
-        host="0.0.0.0",
-        port=port,
-        reload=False,  # Set to False for production
-        log_level="info"
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.is_development,
+        log_level=settings.LOG_LEVEL.lower()
     )

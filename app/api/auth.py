@@ -9,17 +9,17 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 import logging
 
-from database import get_db
-from models.user import User
-from schemas import (
-    UserCreate, UserResponse, LoginRequest, TokenResponse, 
+from app.core.database import get_db
+from app.models.user import User
+from app.schemas import (
+    UserCreate, UserResponse, LoginRequest, TokenResponse,
     RefreshTokenRequest, MessageResponse
 )
-from auth import (
-    get_password_hash, authenticate_user, create_access_token, 
-    create_refresh_token, verify_token, get_current_user,
-    ACCESS_TOKEN_EXPIRE_MINUTES, security
+from app.core.security import (
+    get_password_hash, authenticate_user, create_access_token,
+    create_refresh_token, verify_token, get_current_user, security
 )
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -99,7 +99,7 @@ async def login_user(login_data: LoginRequest, db: Session = Depends(get_db)):
         db.commit()
         
         # Create tokens
-        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
             data={"sub": str(user.id), "email": user.email, "role": user.role.value},
             expires_delta=access_token_expires
@@ -114,7 +114,7 @@ async def login_user(login_data: LoginRequest, db: Session = Depends(get_db)):
             "access_token": access_token,
             "refresh_token": refresh_token,
             "token_type": "bearer",
-            "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             "user": user
         }
         

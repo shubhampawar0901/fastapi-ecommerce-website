@@ -9,14 +9,14 @@ from sqlalchemy import or_, and_
 from typing import List, Optional
 import logging
 
-from database import get_db
-from models.product import Product, Category
-from models.user import User
-from schemas import (
-    ProductCreate, ProductUpdate, ProductResponse, CategoryCreate, 
+from app.core.database import get_db
+from app.models.product import Product, Category
+from app.models.user import User
+from app.schemas import (
+    ProductCreate, ProductUpdate, ProductResponse, CategoryCreate,
     CategoryUpdate, CategoryResponse, PaginatedResponse
 )
-from auth import get_current_user, get_admin_user
+from app.core.security import get_current_user, get_admin_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

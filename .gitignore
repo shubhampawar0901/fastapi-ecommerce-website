@@ -133,6 +133,35 @@ dmypy.json
 *.sqlite
 *.sqlite3
 
+# Development databases (keep structure, ignore data)
+ecommerce.db
+ecommerce_dev.db
+test.db
+
+# Virtual environments (should not be committed)
+venv/
+.venv/
+env/
+.env/
+
+# Application logs
+logs/
+*.log
+
+# Upload directories
+uploads/
+media/
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+
+# Environment-specific configs (keep templates)
+.env
+!.env.example
+!config/*.env
+
 # IDE files
 .vscode/
 .idea/
