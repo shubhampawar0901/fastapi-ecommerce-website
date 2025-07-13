@@ -4,10 +4,10 @@ Creates initial data for testing and demonstration
 """
 
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine, Base
-from models.user import User, UserRole
-from models.product import Product, Category
-from auth import get_password_hash
+from app.core.database import SessionLocal, engine, Base
+from app.models.user import User, UserRole
+from app.models.product import Product, Category
+from app.core.security import get_password_hash
 import logging
 
 logging.basicConfig(level=logging.INFO)

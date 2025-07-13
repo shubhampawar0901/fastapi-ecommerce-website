@@ -10,13 +10,13 @@ import logging
 import uuid
 from datetime import datetime
 
-from database import get_db
-from models.order import Order, OrderItem, OrderStatus, PaymentStatus
-from models.cart import Cart, CartItem
-from models.product import Product
-from models.user import User
-from schemas import OrderCreate, OrderResponse, MessageResponse
-from auth import get_current_user, get_admin_user
+from app.core.database import get_db
+from app.models.order import Order, OrderItem, OrderStatus, PaymentStatus
+from app.models.cart import Cart, CartItem
+from app.models.product import Product
+from app.models.user import User
+from app.schemas import OrderCreate, OrderResponse, MessageResponse
+from app.core.security import get_current_user, get_admin_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

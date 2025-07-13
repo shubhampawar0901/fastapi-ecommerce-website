@@ -9,12 +9,12 @@ from typing import Optional
 import logging
 import uuid
 
-from database import get_db
-from models.cart import Cart, CartItem
-from models.product import Product
-from models.user import User
-from schemas import CartItemCreate, CartItemUpdate, CartResponse, MessageResponse
-from auth import get_current_user
+from app.core.database import get_db
+from app.models.cart import Cart, CartItem
+from app.models.product import Product
+from app.models.user import User
+from app.schemas import CartItemCreate, CartItemUpdate, CartResponse, MessageResponse
+from app.core.security import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

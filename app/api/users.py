@@ -7,10 +7,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 import logging
 
-from database import get_db
-from models.user import User
-from schemas import UserUpdate, UserResponse, MessageResponse
-from auth import get_current_user, get_password_hash
+from app.core.database import get_db
+from app.models.user import User
+from app.schemas import UserUpdate, UserResponse, MessageResponse
+from app.core.security import get_current_user, get_password_hash
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -62,7 +62,7 @@ async def change_password(
     Change user's password
     """
     try:
-        from auth import verify_password
+        from app.core.security import verify_password
         
         # Verify current password
         if not verify_password(current_password, current_user.hashed_password):
@@ -105,7 +105,7 @@ async def delete_user_account(
     Delete user account (requires password confirmation)
     """
     try:
-        from auth import verify_password
+        from app.core.security import verify_password
         
         # Verify password
         if not verify_password(password, current_user.hashed_password):

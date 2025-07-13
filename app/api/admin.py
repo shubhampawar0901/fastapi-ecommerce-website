@@ -9,13 +9,13 @@ from sqlalchemy import func
 from typing import List, Optional
 import logging
 
-from database import get_db, get_db_info
-from models.user import User, UserRole
-from models.product import Product, Category
-from models.order import Order, OrderStatus
-from models.cart import Cart
-from schemas import UserResponse, MessageResponse
-from auth import get_admin_user
+from app.core.database import get_db, get_db_info
+from app.models.user import User, UserRole
+from app.models.product import Product, Category
+from app.models.order import Order, OrderStatus
+from app.models.cart import Cart
+from app.schemas import UserResponse, MessageResponse
+from app.core.security import get_admin_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
