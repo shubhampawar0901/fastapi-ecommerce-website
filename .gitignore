@@ -163,6 +163,10 @@ app.log
 *.tmp
 *.temp
 
-# Documentation (except README.md)
-*.md
+# Documentation (keep important docs)
+# *.md files are generally ignored except for important ones
 !README.md
+!DEPLOYMENT.md
+!DEPLOYMENT_SUMMARY.md
+!API_DOCUMENTATION.md
+!RENDER_DEPLOYMENT_GUIDE.md
